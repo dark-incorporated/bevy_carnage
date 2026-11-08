@@ -1,6 +1,6 @@
 # Quick start, in full: the preset and the bake by hand
 
-Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/bevy-coven/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
+Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/dark-incorporated/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
 
 ## Quick start — the two-line inclusion
 
@@ -49,7 +49,7 @@ What a hit does, in order: the flaymap peels to the depth asked; the wound's spa
 
 **The preset obeys the player's violence setting.** Insert a `GorePolicy` (`GorePolicy::for_tier(GoreTier::Blood)`) and the next hit follows it, so a settings menu is one resource: at `Stylised` a hit is still announced as `Wounded`, at the same point, and nothing bleeds, so the game puts a spark where the blood would have been; `Blood` keeps the blood and refuses the guts and the breaking; the world's share of the blood, the guts and the breaking are each a switch of their own. Reduction is substitution, never deletion.
 
-![The same scripted scene three times: at the stylised tier a yellow spark marks each shot and nothing bleeds; at the blood tier the wounds bleed and pool on the floor and the body stays whole; at blood and gore the body comes apart](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/tiers.gif)
+![The same scripted scene three times: at the stylised tier a yellow spark marks each shot and nothing bleeds; at the blood tier the wounds bleed and pool on the floor and the body stays whole; at blood and gore the body comes apart](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/tiers.gif)
 
 That is `capture_preset -- --tier 0|1|2`; `T` cycles it live in `examples/preset.rs`, and [`docs/preset.md`](../preset.md#the-players-settings) has the table.
 

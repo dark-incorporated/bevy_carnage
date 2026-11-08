@@ -1,6 +1,6 @@
 # Contributing
 
-Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/bevy-coven/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
+Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/dark-incorporated/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
 
 Work is done **in this repository**, which is the source of truth: open issues and pull requests here. [`Ladvien/foundation_vs_slop`](https://github.com/Ladvien/foundation_vs_slop) carries a frozen Bevy 0.19 copy (`0.5.64`) that is never mirrored over this one, so a change sent there does not reach this crate.
 

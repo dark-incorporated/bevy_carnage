@@ -4,7 +4,7 @@ Progressive lacerations: a cut along a mesh surface whose gape widens on a time 
 
 > **A module of `bevy_carnage` since 0.5.0.** This was a crate of its own — the family below — until 2026-09-04, when the seven leaves were folded back into the one crate a game is meant to depend on. This page is its module documentation, kept whole; the paths in it are spelled the way a consumer reaches them now.
 
-![A slash across a thigh opening onto a banded wound bed](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/laceration.gif)
+![A slash across a thigh opening onto a banded wound bed](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/laceration.gif)
 
 ## The family
 

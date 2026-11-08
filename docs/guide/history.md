@@ -1,10 +1,10 @@
 # Status and what each release changed
 
-Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/bevy-coven/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
+Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/dark-incorporated/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
 
 ## Status
 
-**`0.9.0` in the repository and on crates.io. Pre-1.0 in the sense that matters: the API can still move.** It is developed here, on Bevy 0.20, and used by Sanctuary and by `bevy_grimoire`'s family integration (destructible props and the damage dials). Everything from `0.5.19` to `0.7.0` is in the `0.7.0` release, and the `0.5.18` before it is a Bevy 0.19 crate.
+**`0.9.0` in the repository and on crates.io. Pre-1.0 in the sense that matters: the API can still move.** It is developed here, on Bevy 0.20, and used by Sanctuary and by `bevy_dark_factory`'s family integration (destructible props and the damage dials). Everything from `0.5.19` to `0.7.0` is in the `0.7.0` release, and the `0.5.18` before it is a Bevy 0.19 crate.
 
 ### What `0.9.0` changed: blood that is not red
 

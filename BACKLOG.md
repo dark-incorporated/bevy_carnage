@@ -401,7 +401,7 @@ non-positive volume, which is exactly the inconsistently-oriented fragment that 
 **Two stale claims were corrected while the files were open, both of which actively misdirected.**
 
 *Which repository owns the crate.* This file, `CLAUDE.md` and `README.md` each asserted that
-`bevy-coven/bevy_carnage` is the source of truth and that a `crates/bevy_carnage/` in a monorepo checkout
+`dark-incorporated/bevy_carnage` is the source of truth and that a `crates/bevy_carnage/` in a monorepo checkout
 "is a corpse". The tooling says otherwise: `scripts/mirror_crates.sh` states "the monorepo is the source
 of truth; nothing is ever edited on the far side and nothing is ever pulled back", `bevy_carnage` is in
 its `CRATES` and `PUBLIC_CRATES` lists, the root `Cargo.toml` lists `crates/bevy_carnage` as a workspace

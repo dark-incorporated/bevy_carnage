@@ -4,7 +4,7 @@ XPBD Cosserat-style strands with a tearing mesenteric membrane: guts that spill 
 
 > **A module of `bevy_carnage` since 0.5.0.** This was a crate of its own — the family below — until 2026-09-04, when the seven leaves were folded back into the one crate a game is meant to depend on. This page is its module documentation, kept whole; the paths in it are spelled the way a consumer reaches them now.
 
-![A blocked-out figure broken open; strands of gut spill from the torso, hang with weight, coil on the floor and tether the chunks that fell](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/viscera.gif)
+![A blocked-out figure broken open; strands of gut spill from the torso, hang with weight, coil on the floor and tether the chunks that fell](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/viscera.gif)
 
 ## The family
 

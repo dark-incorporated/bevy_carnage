@@ -4,7 +4,7 @@ Blood as a **material**, not a texture: shear-thinning viscosity with a yield st
 
 > **A module of `bevy_carnage` since 0.5.0.** This was a crate of its own — the family below — until 2026-09-04, when the seven leaves were folded back into the one crate a game is meant to depend on. This page is its module documentation, kept whole; the paths in it are spelled the way a consumer reaches them now.
 
-![Sixteen films of blood, thin to thick by arterial and venous, ageing from scarlet to brown over two minutes of drying](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/spectral.gif)
+![Sixteen films of blood, thin to thick by arterial and venous, ageing from scarlet to brown over two minutes of drying](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/spectral.gif)
 
 ## The family
 

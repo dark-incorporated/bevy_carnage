@@ -4,7 +4,7 @@ Anatomical cross-sections for cut faces: the skin, subcutaneous fat, muscle, cor
 
 > **A module of `bevy_carnage` since 0.5.0.** This was a crate of its own — the family below — until 2026-09-04, when the seven leaves were folded back into the one crate a game is meant to depend on. This page is its module documentation, kept whole; the paths in it are spelled the way a consumer reaches them now.
 
-![A cut cylinder whose cap shows skin, fat, muscle, cortex and marrow bands](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/cross_section.gif)
+![A cut cylinder whose cap shows skin, fat, muscle, cortex and marrow bands](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/cross_section.gif)
 
 ## The family
 

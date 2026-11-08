@@ -1,6 +1,6 @@
 # `bevy_carnage::preset` — putting the gore on your character
 
-![The preset on a blocked-out body: shots crater and bleed, blows bruise, the body breaks along its fracture modes and the pieces fall](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/preset.gif)
+![The preset on a blocked-out body: shots crater and bleed, blows bruise, the body breaks along its fracture modes and the pieces fall](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/preset.gif)
 
 The preset is the two-line inclusion: `GorePlugin`, a `Gore` on every surface that can be hurt, and a
 `GoreHit` per injury. The README shows those lines. This page is what they assume, written for a
@@ -156,7 +156,7 @@ whose surround holds under a quarter of it with 0.15 of the relief, all of it fr
 wide film keeps its relief however thin. Four more taps of the wet map per wet fragment. The same spatter
 on the `--through` wall, square on and at a slant, before and after:
 
-![Blood spatter on a plaster wall seen close, square on and at a slant: at 0.5.62 every drop is a shaded dome, like a red bead stuck on; at 0.5.63 the same drops are flat stains with a crisp edge](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/small_films.png)
+![Blood spatter on a plaster wall seen close, square on and at a slant: at 0.5.62 every drop is a shaded dome, like a red bead stuck on; at 0.5.63 the same drops are flat stains with a crisp edge](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/small_films.png)
 
 ## What a dressed skin keeps
 
@@ -234,24 +234,24 @@ records it.
 `capture_skinned --shirt` dresses the same body in a sleeveless shirt, a seventh skinned mesh named
 `Shirt`, and the two chest shots hole it; `C` in the windowed demo puts it on or takes it off.
 
-![The mannequin walks in a pale sleeveless shirt; two shots to the chest punch a ragged hole in it, the wound shows through, and the blood soaks out through the cotton along a frayed, pinkish front](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_shirt.gif)
+![The mannequin walks in a pale sleeveless shirt; two shots to the chest punch a ragged hole in it, the wound shows through, and the blood soaks out through the cotton along a frayed, pinkish front](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_shirt.gif)
 
 `capture_skinned --through` stands a wall behind the body and sends every shot through it; `6` in
 the windowed demo fires one through the chest.
 
-![The mannequin walks in front of a plaster wall; a shot through the raised forearm and two through the chest throw a cone of fine spatter onto the wall behind, each drop its own small stain](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_through.gif)
+![The mannequin walks in front of a plaster wall; a shot through the raised forearm and two through the chest throw a cone of fine spatter onto the wall behind, each drop its own small stain](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_through.gif)
 
 `capture_skinned --guard` stands the body on guard, its right forearm across its chest, and sends
 one shot through the forearm: it goes on into the chest, and when the arm comes down the wound it hid
 is there.
 
-![The mannequin stands with its right forearm held across its chest; one shot goes through the forearm and on into the chest, and as the arm is lowered the chest wound it hid is seen bleeding, the wall behind spattered by the chest's exit](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_guard.gif)
+![The mannequin stands with its right forearm held across its chest; one shot goes through the forearm and on into the chest, and as the arm is lowered the chest wound it hid is seen bleeding, the wall behind spattered by the chest's exit](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_guard.gif)
 
 `capture_skinned --blows` lands a second blow on the left shin, and both bruises age.
 
-![Close on the mannequin's left shin as it walks: one brown bruise mid-shin, then a blow just below the knee raises a paler one above it; both darken as they age, and where they overlap they are darker still](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_bruises.gif)
+![Close on the mannequin's left shin as it walks: one brown bruise mid-shin, then a blow just below the knee raises a paler one above it; both darken as they age, and where they overlap they are darker still](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_bruises.gif)
 
-![The mannequin walks with its left arm raised; a heavy shot to the chest breaks it mid-stride into pieces that keep the pose, the raised arm up and the legs mid-step, before they fall and settle among its guts](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_break.gif)
+![The mannequin walks with its left arm raised; a heavy shot to the chest breaks it mid-stride into pieces that keep the pose, the raised arm up and the legs mid-step, before they fall and settle among its guts](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_break.gif)
 
 ## Units, in one place
 
@@ -273,11 +273,11 @@ and breaks a body that can break.
 The guts a torso hit spills are not left clean: each is drawn by `viscera::soaked_tube`, **lumpy** (two sines on its radius, so no two strands bulge alike),
 **slumped** flat where it lies on `ViscSettings::floor_y`, and **soaked** in blood (thickest at the wound end and wherever it lies in the pool, patchy
 between). It is all cosmetic and outside every digest. `GoreDials::strands` (5 ships) is how many a hit spills; a
-game that draws its own strands with `tube_mesh` gets the lumps and not the slump or the tint, which need the floor. ![A body breaks and its guts hang and fall, frames 96 to 260 of `capture_preset`: 0.8.5 on the left with salmon-pink tubes of one radius, 0.8.6 on the right with blood-soaked, lumpy tubes that lie flattened in the pool](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/media/guts.gif)
+game that draws its own strands with `tube_mesh` gets the lumps and not the slump or the tint, which need the floor. ![A body breaks and its guts hang and fall, frames 96 to 260 of `capture_preset`: 0.8.5 on the left with salmon-pink tubes of one radius, 0.8.6 on the right with blood-soaked, lumpy tubes that lie flattened in the pool](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/media/guts.gif)
 
 ## The player's settings
 
-![One scripted scene three times: at the stylised tier a yellow spark marks each shot and nothing bleeds; at the blood tier the wounds bleed and pool and the body stays whole; at blood and gore the body comes apart](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/tiers.gif)
+![One scripted scene three times: at the stylised tier a yellow spark marks each shot and nothing bleeds; at the blood tier the wounds bleed and pool and the body stays whole; at blood and gore the body comes apart](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/tiers.gif)
 
 A violence setting is a rating requirement in some markets and an accessibility one in most, and
 since 0.5.21 the preset follows it. `GorePolicy` is read at every hit, so a settings menu replaces
@@ -366,7 +366,7 @@ as drag slows it to its fall, 5 to 19 mm wide. Drawn as a disc as wide as it was
 across, the spray read as red dots hanging round the wound. `capture_skinned --guard --slow 4` is a hit
 at a quarter speed:
 
-![Slowed four times: one shot through the forearm held across the mannequin's chest throws a fan of thin red streaks from both wounds, which slow and shorten as they fly, and a soft red mist hangs where the shot went in](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_spray.gif)
+![Slowed four times: one shot through the forearm held across the mannequin's chest throws a fan of thin red streaks from both wounds, which slow and shorten as they fly, and a soft red mist hangs where the shot went in](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_spray.gif)
 
 **It follows the player's setting.** Where `GorePolicy::draws_blood` is false the same bursts are
 thrown in `CarnageSettings::substitute_srgb` instead (`CarnageEffects::substitute`): the same tick,
@@ -451,7 +451,7 @@ whole outline reads, seen from above and from the walker's side, on 30 cm tiles.
 texels in memory, and a tick of the blood on it, the texels round each pool and print rather than
 the floor between them, while any of it is wet (0.5.58).
 
-![The mannequin walks across a tiled floor through a spill of blood and out the other side, leaving a line of bloody boot prints, left and right, each paler and more broken than the last](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/skinned_stroll.gif)
+![The mannequin walks across a tiled floor through a spill of blood and out the other side, leaving a line of bloody boot prints, left and right, each paler and more broken than the last](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/skinned_stroll.gif)
 
 ## Smears
 
@@ -550,7 +550,7 @@ app.add_plugins(GorePlugin);
 
 `Fluid::Blood` (the default), `Ichor` (black oil), `Green`, `Blue`, `Milk` (white) or `Custom(Pigment)`. In RON a named fluid is its name (`fluid: Green`).
 
-![Six panels in two rows of three, one scene played five times: a standing mannequin with its raised left forearm, right thigh and chest shot and slashed, the runs and the pools at its feet the same shapes in each; the panels are labelled blood (dark red), ichor (black), green, blue and milk (white), and the sixth is a legend naming the dial and the digest all five share](https://raw.githubusercontent.com/bevy-coven/bevy_carnage/main/docs/media/fluids.gif)
+![Six panels in two rows of three, one scene played five times: a standing mannequin with its raised left forearm, right thigh and chest shot and slashed, the runs and the pools at its feet the same shapes in each; the panels are labelled blood (dark red), ichor (black), green, blue and milk (white), and the sixth is a legend naming the dial and the digest all five share](https://raw.githubusercontent.com/dark-incorporated/bevy_carnage/main/docs/media/fluids.gif)
 
 - **Everything the preset draws as blood wears it**: a canvas's film, its runs and its pools, a wall's spray and stipple, a cloth's soak, a cut face's film and a crater's floor (the flesh material's blood table is baked from the dial), and the guts' soak (`viscera::SoakTable`, which the preset rebuilds when the dial changes).
 - **It is the film model, not a swatch.** `bloodstain::spectral`'s Kubelka-Munk film over the surface, with a pigment's `μa(λ)` and `μs'` where blood's table was: a thin film is tinted and lets the surface through, a pool is deep and opaque. `Pigment` is a flat absorption, a power-law continuum (melanin's), three Gaussian bands and a flat reduced scattering, plus how it dries. Ichor is melanin (thin amber-brown, thick black), green biliverdin, blue oxyhaemocyanin, milk scattering with almost no absorption (it **whitens** what it lies on where an absorber darkens it). Every number of a named pigment is this crate's own, with its sources in the note.

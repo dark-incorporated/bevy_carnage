@@ -395,7 +395,7 @@ edition = "2024"
 rust-version = "1.97.1"
 description = "Deterministic runtime gore for Bevy: plane-cut a character's own meshes into watertight-capped chunks, bore bullet channels through them, and drive blood, spatter and impact feel off the wounds that result."
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/bevy-coven/bevy_carnage"
+repository = "https://github.com/dark-incorporated/bevy_carnage"
 keywords = ["bevy", "gamedev", "gore", "fracture", "destruction"]
 categories = ["game-development", "graphics"]
 # **The six `docs/*.gif` are 10.4 MB of the crate's 11.9 MB, and crates.io's package limit is 10 MiB.**

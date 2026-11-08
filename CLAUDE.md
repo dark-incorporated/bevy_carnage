@@ -515,4 +515,4 @@ The paper's modes are vector fields. On a cell graph with one translation per ce
 
 A bake needs a `CellGraph`, and only the crate that owns a decomposition knows when it is complete. The plugin adds two resources and stops. A system that polled for graphs would be a schedule this crate does not own.
 
-README and docs follow https://github.com/bevy-coven/.github/blob/main/DOCUMENTATION.md; a feature is not done until its README line and, if visible, its GIF exist.
+README and docs follow https://github.com/dark-incorporated/.github/blob/main/DOCUMENTATION.md; a feature is not done until its README line and, if visible, its GIF exist.

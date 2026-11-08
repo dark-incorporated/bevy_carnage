@@ -1,6 +1,6 @@
 # The family: one crate, seven kernels
 
-Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/bevy-coven/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
+Moved from the README on 2026-10-31, unchanged except for link paths, when the README was brought to the [org documentation guide](https://github.com/dark-incorporated/.github/blob/main/DOCUMENTATION.md). Its Rust blocks are still compiled as doctests (`src/lib.rs`).
 
 This crate is the whole gore stack. **Depend on it alone**: every kernel below is a module of it, reached by the path in the last column, and there is nothing else to add — no second dependency line, no version pin to keep aligned with this one. Each was a published crate of its own until 0.5.0 (the links are the archived repositories, kept for their history); a game never needed seven, so they came home.
 

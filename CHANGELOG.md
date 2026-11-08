@@ -6,6 +6,13 @@ described in the comment block at the top of `Cargo.toml`; they and every entry 
 
 ## [Unreleased]
 
+Meets the family's machine plate (`dark-incorporated/.github/docs/STYLE.md`):
+
+- Every system is in `CarnageSystems`: `GoreSystems`, `FleshSystems`, `CrossSectionSystems`, `FlaymapSystems`, `LacerationSystems`, `VisceraSystems`, `WetmapSystems` and (with `vfx`) `CarnageVfxSystems` are configured into it in each schedule they run in, and the preset's `retube` is in it directly. The `vfx` startup bake `build_effects` is now in `CarnageVfxSystems`.
+- The settings resources (`FractureSettings`, `CarnageSettings`, `CrossSectionSettings`, `FlaySettings`, `ModeSettings`, `ViscSettings`, `WetSettings`) derive `Reflect` with `reflect(Resource, Default)` and, with `serde`, `reflect(Serialize, Deserialize)`; `CrossSectionSettings`, `ViscSettings` and `WetSettings` gain serde derives (`#[serde(default)]`) and `Scale` gains them too. `CarnageSettings::blood` and `WetSettings::fluid` are `#[reflect(ignore)]` (their types are in the engine-free `bloodstain` module): serde still saves them, a reflected write leaves them as they are.
+- Every public component derives `Reflect` with `reflect(Component)` and is registered by the plugin that owns it. Fields of engine-free or opaque types are `#[reflect(ignore)]`.
+- `tests/machine_plate.rs`.
+
 ## [0.9.0] - 2026-11-02
 
 ### Added

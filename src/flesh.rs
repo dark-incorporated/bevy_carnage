@@ -433,6 +433,7 @@ impl Plugin for FleshPlugin {
         embedded_asset!(app, "flesh_prepass.wesl");
         app.init_resource::<FleshTables>()
             .add_plugins(MaterialPlugin::<FleshMaterial>::default())
+            .configure_sets(Startup, FleshSystems.in_set(crate::CarnageSystems))
             .add_systems(Startup, bake_tables.in_set(FleshSystems));
     }
 }

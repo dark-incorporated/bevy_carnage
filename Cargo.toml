@@ -524,7 +524,7 @@ bevy_hanabi = { version = "0.19", default-features = false, features = ["3d"], o
 # umbrella here, where it cannot reach a consumer's dependency graph. `tests/leaf.rs` reads
 # `[dependencies]` only, deliberately.
 [dev-dependencies]
-bevy = { version = "0.20.0" }
+bevy = { version = "0.20.0", features = ["debug"] } # `debug` gives systems their full names for tests/machine_plate.rs
 # **A RON parser, for one test and one reason.** `FractureSettings` is `deny_unknown_fields` with every
 # field required, so adding a dial breaks every authored file that enumerated the others — at load time,
 # which no compile catches. `a_config_written_before_ejecta_soften_still_loads` pins that against the

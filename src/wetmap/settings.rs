@@ -16,13 +16,20 @@
 
 use bevy::prelude::Resource;
 use crate::bloodstain::{BloodSettings, Fluid};
+use bevy::prelude::{Reflect, ReflectDefault, ReflectResource};
+#[cfg(feature = "serde")]
+use bevy::prelude::{ReflectDeserialize, ReflectSerialize};
 
 /// **The wetmap dials.** When blood runs, how far it creeps, how much the substrate keeps, how long it
 /// takes to dry, and how many canvases may reach the GPU in one frame.
 ///
 /// Authored once per game and then left alone. Nothing here decides *when* a canvas ticks — the caller
 /// owns that, because the caller owns the tick counter.
-#[derive(Resource, Clone, Debug, PartialEq)]
+#[derive(Resource, Clone, Debug, PartialEq, Reflect)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct WetSettings {
     /// Normalised coverage above which a texel runs. `0.35`.
     ///
@@ -93,6 +100,7 @@ pub struct WetSettings {
     ///
     /// Changed at run time it is the colour of the **next** thing drawn: a canvas re-tabulates its colours when it changes, and a stain already
     /// dried keeps the colour it dried to until the texel is touched again. The GPU's table is baked once, at start-up.
+    #[reflect(ignore)]
     pub fluid: Fluid,
     /// **Subsamples per texel axis when a stain is stamped.** `1` — one sample per texel, the
     /// shipped rasterisation to the byte.

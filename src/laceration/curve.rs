@@ -38,11 +38,13 @@
 //! retraction is the released strain of a linear spring, which is a modelling step the paper does
 //! not take for us.
 
+use bevy::prelude::Reflect;
+
 /// **The skin's resting tension where the cut is**, and which way its collagen runs.
 ///
 /// Both are authored per subject and per site, because both genuinely vary that way: the same blade
 /// on the same person opens a different wound on a shin than on a cheek.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Tension {
     /// How tensioned the skin is here, `[0, 1]`. `0` is a slack, undermined flap that barely parts;
@@ -105,7 +107,7 @@ pub fn anisotropy(tear_dir: [f32; 3], tension: &Tension) -> f32 {
 }
 
 /// **How wide the wound ends up, and how long it takes to get there.**
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Gape {
     /// Full-open width in **mesh units** — the separation between the two lips at a tension of `1`

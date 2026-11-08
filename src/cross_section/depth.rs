@@ -13,6 +13,7 @@
 
 use bevy::math::{Vec2, Vec3};
 use bevy::mesh::{Mesh, VertexAttributeValues};
+use bevy::prelude::Reflect;
 
 use crate::cross_section::layers::Layers;
 
@@ -42,7 +43,8 @@ pub fn depth_below_skin(p: Vec3, planes: &[SkinPlane]) -> f32 {
 }
 
 /// How the depth attribute is scaled into the strip's UV space.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Scale {
     /// Millimetres per mesh unit. `1000.0` for a mesh authored in metres.
     pub mm_per_unit: f32,

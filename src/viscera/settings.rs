@@ -1,6 +1,9 @@
 //! The solver's dials, and the shipped value of every one of them.
 
 use bevy::prelude::Resource;
+use bevy::prelude::{Reflect, ReflectDefault, ReflectResource};
+#[cfg(feature = "serde")]
+use bevy::prelude::{ReflectDeserialize, ReflectSerialize};
 
 /// Substeps per fixed tick. **Fixed, because a variable substep count is a variable result.**
 pub const DEFAULT_SUBSTEPS: u32 = 4;
@@ -28,7 +31,11 @@ pub const DEFAULT_MAX_STRANDS: u32 = 8;
 /// The two counts are deliberately *not* tuned per call. A solver that spent more iterations on a
 /// close-up strand than on a distant one would give a different answer for the same input, which is
 /// the one thing this crate is for.
-#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+#[derive(Resource, Clone, Copy, Debug, PartialEq, Reflect)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct ViscSettings {
     /// Substeps per fixed tick. Clamped to at least 1 at use.
     pub substeps: u32,

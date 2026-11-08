@@ -117,7 +117,8 @@ impl Palette {
 /// **How long an effect instance may live after its spawner finishes**, in this crate's own ticks.
 ///
 /// Not a Hanabi type — 0.19 has none. See the module docs for why one condition is not enough.
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 pub struct EffectTtl(pub u32);
 
 /// **The film a spatter droplet in flight is**, and therefore its colour.
@@ -612,12 +613,14 @@ pub fn gib_ribbon() -> EffectAsset {
 ///
 /// The crate deliberately does not learn what a gib is; the consumer owns the decision, and this owns
 /// the asset, the cap and the lifetime.
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 pub struct BleedingChunk;
 
 /// The spawned ribbon instance, a child of the entity it trails. Internal bookkeeping, public only so
 /// a consumer can query for one in a test.
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 pub struct RibbonInstance;
 
 /// **Stop emitting now, despawn in this many ticks.**
@@ -626,7 +629,8 @@ pub struct RibbonInstance;
 /// `spawner.has_completed()`, and that returns `!settings.is_forever() && …`
 /// (`bevy_hanabi/src/spawn.rs:794-804`) — a rate spawner *is* forever, so the condition is never met
 /// and a ribbon retired that way would leak for the life of the process.
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 pub struct EffectFade(pub u32);
 
 /// Ticks between a chunk coming to rest and its ribbon entity going away.
@@ -656,6 +660,12 @@ impl Plugin for CarnageVfxPlugin {
             app.add_plugins(HanabiPlugin);
         }
         app.init_resource::<CarnageSettings>()
+            .register_type::<CarnageSettings>()
+            .register_type::<EffectTtl>()
+            .register_type::<BleedingChunk>()
+            .register_type::<RibbonInstance>()
+            .register_type::<EffectFade>()
+            .register_type::<crate::decal::PoolDecal>()
             // **The message is registered beside the system that READS it.**
             //
             // `spawn_wound_effects` takes `MessageReader<Wounded>`, and in Bevy 0.19 a reader whose
@@ -671,7 +681,9 @@ impl Plugin for CarnageVfxPlugin {
             // [`crate::spawn_stain`], so a caller that added this plugin and then had to remember a
             // second registration would get silently stain-free blood — which is exactly the failure
             // that put this line here.
-            .add_systems(Startup, build_effects)
+            .configure_sets(Startup, CarnageVfxSystems.in_set(crate::CarnageSystems))
+            .configure_sets(Update, CarnageVfxSystems.in_set(crate::CarnageSystems))
+            .add_systems(Startup, build_effects.in_set(CarnageVfxSystems))
             .init_resource::<crate::decal::StainMasks>()
             .add_systems(
                 Update,

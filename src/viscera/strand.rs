@@ -3,6 +3,7 @@
 use bevy::log::warn;
 use bevy::math::Vec3;
 use bevy::prelude::Component;
+use bevy::prelude::{Reflect, ReflectComponent, ReflectDefault};
 
 use crate::viscera::hash::{fnv1a_u32, FNV_SEED};
 
@@ -45,7 +46,8 @@ pub const DEFAULT_TEAR_STRAIN: f32 = 0.35;
 /// Formulation: Deul, Charrier & Bender, *Direct position-based solver for stiff rods*, Computer
 /// Graphics Forum 37(6) (`doi:10.1111/cgf.13326`); Bergou, Wardetzky, Robinson, Audoly & Grinspun,
 /// *Discrete elastic rods*, ACM TOG 27(3) (`doi:10.1145/1399504.1360662`).
-#[derive(Component, Clone, Debug)]
+#[derive(Component, Clone, Debug, Reflect)]
+#[reflect(Component)]
 pub struct Strand {
     /// Current node positions, world space. Length `segments + 1`, never more than [`MAX_NODES`].
     pos: Vec<Vec3>,
@@ -192,7 +194,8 @@ impl Strand {
 /// A link whose strain passes [`Mesentery::tear_strain`] sets its flag in `torn` and is skipped
 /// forever after. **The tear is monotone, like clotting**: nothing in this crate clears a flag, so a
 /// tether cannot heal and the sim cannot oscillate between held and free.
-#[derive(Component, Clone, Debug)]
+#[derive(Component, Clone, Debug, Reflect)]
+#[reflect(Component, Default)]
 pub struct Mesentery {
     /// `(node index into the strand, fixed world point)`. Projected in **ascending index order**, not
     /// in the order they were pushed, so two callers that build the same set in different orders get

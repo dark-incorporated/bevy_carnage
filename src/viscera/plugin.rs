@@ -30,7 +30,10 @@ impl Plugin for VisceraPlugin {
         // `init_resource` here is what stops the reader below meeting Bevy 0.19's sharpest trap: a
         // missing `Res<T>` PANICS its system rather than skipping it.
         app.init_resource::<ViscSettings>()
-            .configure_sets(FixedUpdate, VisceraSystems)
+            .register_type::<ViscSettings>()
+            .register_type::<Strand>()
+            .register_type::<Mesentery>()
+            .configure_sets(FixedUpdate, VisceraSystems.in_set(crate::CarnageSystems))
             .add_systems(FixedUpdate, step_viscera.in_set(VisceraSystems));
     }
 }

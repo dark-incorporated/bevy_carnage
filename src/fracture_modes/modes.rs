@@ -46,11 +46,17 @@
 
 use crate::fracture_modes::graph::{CellGraph, GraphError};
 use crate::fracture_modes::linalg::{Cholesky, SymMat, jacobi_eigen};
+use bevy::prelude::{ReflectDefault, ReflectResource};
+#[cfg(feature = "serde")]
+use bevy::prelude::{ReflectDeserialize, ReflectSerialize};
 
 /// **The bake dials.** Defaults are the paper's regime: strain weight small enough that the
 /// discontinuity term dominates (Fig. 12), tolerance `σ = 10⁻³` at impact.
-#[derive(bevy::ecs::resource::Resource, Clone, Copy, Debug, PartialEq)]
+#[derive(bevy::ecs::resource::Resource, Clone, Copy, Debug, PartialEq, bevy::reflect::Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct ModeSettings {
     /// Modes to compute. The paper uses 10–30; a body with a few dozen cells wants ~8.
     pub k: usize,

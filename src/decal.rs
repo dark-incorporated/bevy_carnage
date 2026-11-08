@@ -322,7 +322,8 @@ pub fn spawn_stain(
 }
 
 /// Marks a pool decal and remembers which pool it draws — an index into the caller's pool list.
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 pub struct PoolDecal(pub usize);
 
 /// Spawn one [`Pool`] as a forward decal.

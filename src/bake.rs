@@ -23,7 +23,8 @@ use crate::tree::{FragmentId, FragmentTree};
 ///
 /// The handle is the cache key *and* the seed source, so two subjects sharing one asset share one
 /// bake — and swapping the asset needs no code change.
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct FractureSubject(pub Handle<WorldAsset>);
 
 /// **The caller's convex decomposition of the subject, in subject-local space.**
@@ -35,8 +36,9 @@ pub struct FractureSubject(pub Handle<WorldAsset>);
 ///
 /// A subject with this component missing is `error!`-refused and never baked. That is deliberate: the
 /// alternative is synthesising a bounding box and silently fracturing the wrong shape.
-#[derive(Component)]
-pub struct FractureProxy(pub Vec<ProxyCell>);
+#[derive(Component, Reflect)]
+#[reflect(Component, from_reflect = false)]
+pub struct FractureProxy(#[reflect(ignore)] pub Vec<ProxyCell>);
 
 /// **Channels bored through this subject's proxy before it is cut** — bullet holes, baked in.
 ///
@@ -44,15 +46,17 @@ pub struct FractureProxy(pub Vec<ProxyCell>);
 /// adding a bore after the first bake does not re-bore that subject. A subject whose holes change
 /// during play is a fresh bake, not an edit — [`crate::fracture_mesh`] is the pure path for that, and
 /// it costs about the 2 ms `AG-011` measured.
-#[derive(Component, Default, Clone, Debug)]
-pub struct FractureBores(pub Vec<Bore>);
+#[derive(Component, Default, Clone, Debug, Reflect)]
+#[reflect(Component, Default)]
+pub struct FractureBores(#[reflect(ignore)] pub Vec<Bore>);
 
 /// **Marks a subtree to be pruned out of the body and baked as one intact chunk**, keeping its own
 /// material — a carried weapon, a hat, a backpack. The walk does not descend past it.
 ///
 /// Present-but-empty is treated as "still streaming", never as "this subject has no detached part":
 /// see the bake gate below for what that distinction cost.
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct DetachedPart;
 
 /// **Which body region this subject's cut faces belong to** — a limb, a torso or a head.
@@ -62,7 +66,8 @@ pub struct DetachedPart;
 /// `CrossSectionAtlas::material(region)` on the cap draws skin, fat, muscle, cortex and marrow at
 /// the depths measured for that region. Absent, caps carry no `UV_1` and draw whatever material
 /// the caller gives them — exactly what they did before this component existed.
-#[derive(Component, Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Component, Clone, Copy, Debug, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 pub struct FractureRegion(pub crate::cross_section::Region);
 
 /// One baked body fragment, in subject-**local** units (render scale is applied at spawn). Both

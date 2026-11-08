@@ -4,6 +4,9 @@ mod depth;
 mod layers;
 mod strip;
 
+use bevy::prelude::{Reflect, ReflectDefault, ReflectResource};
+#[cfg(feature = "serde")]
+use bevy::prelude::{ReflectDeserialize, ReflectSerialize};
 pub use depth::{Scale, SkinPlane, annotate_cap, depth_below_skin, uv1_at, uv1_at_core};
 pub use layers::{Layer, Layers, Region};
 pub use strip::{Band, Strip, strip, texel_at, texel_mean};
@@ -27,7 +30,11 @@ use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 pub struct CrossSectionSystems;
 
 /// **The bake dials.** Which thickness row each region uses, how big the strips are, and the seed.
-#[derive(Resource, Clone, Debug, PartialEq)]
+#[derive(Resource, Clone, Debug, PartialEq, Reflect)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct CrossSectionSettings {
     /// Per-region layer thicknesses, in [`Region::ALL`] order. Defaults to [`Layers::for_region`].
     pub layers: [Layers; 3],
@@ -116,7 +123,9 @@ pub struct CrossSectionPlugin;
 impl Plugin for CrossSectionPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<CrossSectionSettings>()
+            .register_type::<CrossSectionSettings>()
             .init_resource::<CrossSectionAtlas>()
+            .configure_sets(Startup, CrossSectionSystems.in_set(crate::CarnageSystems))
             .add_systems(Startup, bake_strips.in_set(CrossSectionSystems));
     }
 }

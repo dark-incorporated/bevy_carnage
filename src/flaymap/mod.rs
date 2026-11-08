@@ -86,7 +86,10 @@ impl Plugin for FlaymapPlugin {
         // `init_resource` so a consumer that never authors settings still gets the shipped dials, and
         // so the system below cannot be the reason a missing `Res<T>` takes the app down.
         app.init_resource::<FlaySettings>()
+            .register_type::<FlaySettings>()
+            .register_type::<FlayCanvas>()
             .add_message::<BoneExposed>()
+            .configure_sets(Update, FlaymapSystems.in_set(crate::CarnageSystems))
             .add_systems(Update, upload_dirty_canvases.in_set(FlaymapSystems));
     }
 }

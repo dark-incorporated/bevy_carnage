@@ -15,14 +15,20 @@
 
 use bevy::prelude::Resource;
 use crate::cross_section::Scale;
+use bevy::prelude::{Reflect, ReflectDefault, ReflectResource};
+#[cfg(feature = "serde")]
+use bevy::prelude::{ReflectDeserialize, ReflectSerialize};
 
 /// **The flaymap dials.** How many canvases may upload in a frame, and the three numbers the tissue
 /// shading is a function of.
 ///
 /// Authored once per game and then left alone. Nothing here decides *when* a canvas is painted or
 /// shaded — the caller owns that, because the caller owns the hit.
-#[derive(Resource, Clone, Debug, PartialEq)]
+#[derive(Resource, Clone, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct FlaySettings {
     /// Canvases the plugin may upload in one frame. `4`.
     ///

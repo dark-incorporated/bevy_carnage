@@ -123,7 +123,7 @@ use bevy::prelude::*;
 ///
 /// **Append-only**, like every other `#[repr(u32)]` in this family: the discriminant travels in
 /// authored data and in a genome.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u32)]
 pub enum LoadingMode {
@@ -150,7 +150,7 @@ pub enum LoadingMode {
 /// material name for flavour — it changes the fragment aspect ratio and the piece count.
 ///
 /// **Append-only.**
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u32)]
 pub enum TissueClass {
@@ -171,7 +171,7 @@ pub enum TissueClass {
 ///
 /// `CutSettings::new` sets `WeakAxis`, which is why every frozen bake in this crate is unmoved by the
 /// existence of the other arm.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum FaultPolicy {
     /// Cut across the narrowest cross-section. Direction-blind, and correct for an axial load.
@@ -354,9 +354,12 @@ impl CutSettings {
 /// **These set the *finest* granularity, not the only one.** A bake keeps the whole hierarchy it cut
 /// through, so `max_pieces` is the ceiling a caller can ask for, not the count it must take —
 /// [`FragmentTree::frontier_of`] reads the same bake back at three pieces or at all of them.
-#[derive(Resource, Clone, Debug, PartialEq)]
+#[derive(Resource, Clone, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(deny_unknown_fields))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct FractureSettings {
     /// Fragment count at [`ref_extent`](Self::ref_extent); scaled by the mesh's actual bounding size.
     pub pieces_base: i32,
@@ -714,9 +717,12 @@ pub const TRABECULAR_MAX_PIECES: usize = 3;
 /// the leaf would be two values for one quantity, and they would disagree the first time either was
 /// authored. What stays here is what the leaf cannot own: hit feel, camera shake, particle capacity
 /// and the render budgets, all of which need an engine to mean anything.
-#[derive(Resource, Clone, Debug, PartialEq)]
+#[derive(Resource, Clone, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(deny_unknown_fields))]
+#[cfg_attr(feature = "serde", serde(default))]
+#[reflect(Resource, Default)]
+#[cfg_attr(feature = "serde", reflect(Serialize, Deserialize))]
 pub struct CarnageSettings {
     /// **Blood as a material.** Every dial the spatter, stain, pool, bleed and drying models read.
     ///
@@ -724,6 +730,7 @@ pub struct CarnageSettings {
     /// 2400.0, …)`, which makes it obvious at a glance which dials belong to the leaf and are usable
     /// without Bevy. Flattening would hide the boundary the whole extraction exists to draw.
     #[cfg_attr(feature = "serde", serde(default))]
+    #[reflect(ignore)]
     pub blood: BloodSettings,
     /// Trauma one severity-1 wound is worth, in `[0, 1]`, **before** the caller's own scaling.
     #[cfg_attr(feature = "serde", serde(default = "default_trauma_per_wound"))]
@@ -1016,8 +1023,9 @@ impl Wound {
 ///
 /// `Deref`/`DerefMut` to the value, so `bleeding.age(tick)` and `bleeding.area` read exactly as they
 /// did when `Bleed` was the component.
-#[derive(Component, Clone, Copy, Debug, PartialEq, Deref, DerefMut)]
-pub struct Bleeding(pub Bleed);
+#[derive(Component, Clone, Copy, Debug, PartialEq, Deref, DerefMut, Reflect)]
+#[reflect(Component, from_reflect = false)]
+pub struct Bleeding(#[reflect(ignore)] pub Bleed);
 
 impl Bleeding {
     /// Open a bleed at `tick` for a wound — [`Bleed::new`], wrapped.
@@ -1029,11 +1037,15 @@ impl Bleeding {
     }
 }
 
-/// The set [`bake_fractures`] runs in. **Gate and order against this, not against the system.**
+/// **Every system this crate adds is in this set**, directly or through the set of the plugin that adds it
+/// ([`GoreSystems`](crate::preset::GoreSystems), [`FleshSystems`](crate::flesh::FleshSystems),
+/// [`CrossSectionSystems`](crate::cross_section::CrossSectionSystems), `FlaymapSystems`, `LacerationSystems`,
+/// `VisceraSystems`, `WetmapSystems` and, with `vfx`, `CarnageVfxSystems`), each configured into this one in the
+/// schedule it runs in. **Gate and order against this, not against the system.**
 ///
-/// The plugin puts the bake on `Update` and nothing else: it is an asset bake gated on streaming, so
-/// it has no business on a fixed timestep. What it must *not* do is decide when your game is running —
-/// so the run condition is yours:
+/// [`bake_fractures`] runs in it. The plugin puts the bake on `Update` and nothing else: it is an asset bake gated on
+/// streaming, so it has no business on a fixed timestep. What it must *not* do is decide when your game is
+/// running — so the run condition is yours, per schedule (`Update` here, `FixedUpdate` for the preset's):
 ///
 /// ```ignore
 /// app.add_plugins(bevy_carnage::CarnagePlugin)
@@ -1063,6 +1075,14 @@ impl Plugin for CarnagePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<FractureCache>()
             .init_resource::<FractureSettings>()
+            .register_type::<FractureSettings>()
+            .register_type::<CarnageSettings>()
+            .register_type::<FractureSubject>()
+            .register_type::<FractureProxy>()
+            .register_type::<FractureBores>()
+            .register_type::<DetachedPart>()
+            .register_type::<FractureRegion>()
+            .register_type::<Bleeding>()
             // **The framework surface, `init_resource`d rather than inserted.** A caller that owns
             // the tone and the budgets inserts them *before* this plugin and its values win; there
             // is no merge and no partial default, which is the same rule `FractureSettings` keeps.

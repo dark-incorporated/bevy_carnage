@@ -9,6 +9,7 @@ use bevy::log::warn;
 use bevy::math::{Vec2, Vec3};
 use bevy::mesh::Mesh;
 use bevy::prelude::Component;
+use bevy::prelude::{Reflect, ReflectComponent};
 use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 use bevy::transform::components::GlobalTransform;
 use crate::bloodstain::dry::{DRY_REF_AREA_M2, DRY_REF_TICKS, appearance_in};
@@ -136,7 +137,8 @@ const CONE_LIFT_UNTIL: f32 = 1.85;
 /// The schedule. [`tick`](Self::tick) takes the tick number because this crate has no clock and will
 /// not guess one; the plugin registers only the upload budget, which is the one part with no gameplay
 /// opinion in it.
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component, from_reflect = false)]
 pub struct WetCanvas {
     /// Edge length in texels. Always ≥ 1.
     size: u32,
@@ -178,6 +180,7 @@ pub struct WetCanvas {
     film_lut: [[f32; 3]; FILM_LEVELS],
     film_key: Option<(u32, u32, u32, u64)>,
     /// What a `(level, age)` pair shades to, kept between ticks: see `shade`. Empty until the canvas first shades blood.
+    #[reflect(ignore)]
     shaded: Vec<Shaded>,
     /// What `shaded` was computed from; it is dropped when this changes.
     shaded_for: Option<(u32, u32, u32, u64, u32, u32)>,
@@ -206,20 +209,26 @@ pub struct WetCanvas {
     /// between them: two pools in opposite corners of a 1024 floor cost 25.5 ms a tick, against 0.35 for one. A tile's own
     /// rectangle is what keeps the one-pool case as cheap as it was: covering whole tiles and the ring of tiles round them, as was
     /// tried first, tripled it.
+    #[reflect(ignore)]
     live: Vec<Option<Live>>,
     /// **The blood a tick left, as a rectangle one row high for each stretch of a row that holds any**, `x0..=x1` of row `y`
     /// (stretches of one row less than [`SPAN_GAP`] texels apart are one). Re-measured over what a tick covered, so it shrinks as
     /// the substrate takes the blood. It replaced a rectangle for each tile of blood, which for a spray of fine drops was the
     /// whole tile round each of them: about three texels covered for each that held blood, and a tick's passes are paid per texel
     /// covered.
+    #[reflect(ignore)]
     spans: Vec<Live>,
     /// Scratch: the runs a tick's passes cover, and the wider runs their snapshot covers, kept so a
     /// tick does not allocate; and the cuts along one row while they are built, the boxes they are built from, and the boxes
     /// that cross the row being built.
+    #[reflect(ignore)]
     runs: Vec<Live>,
+    #[reflect(ignore)]
     snap: Vec<Live>,
     cuts: Vec<(i64, i64)>,
+    #[reflect(ignore)]
     boxes: Vec<Live>,
+    #[reflect(ignore)]
     active: Vec<Live>,
     /// **Image pixels per texel along each edge**, `1..=MAX_DETAIL`. See
     /// [`new_detailed`](Self::new_detailed).

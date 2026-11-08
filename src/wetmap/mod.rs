@@ -40,6 +40,9 @@ impl Plugin for WetmapPlugin {
         // `init_resource` so a consumer that never authors settings still gets the shipped dials, and
         // so the system below cannot be the reason a missing `Res<T>` takes the app down.
         app.init_resource::<WetSettings>()
+            .register_type::<WetSettings>()
+            .register_type::<WetCanvas>()
+            .configure_sets(Update, WetmapSystems.in_set(crate::CarnageSystems))
             .add_systems(Update, upload_dirty_canvases.in_set(WetmapSystems));
     }
 }

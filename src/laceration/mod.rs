@@ -27,6 +27,7 @@ use bevy::mesh::skinning::SkinnedMesh;
 use bevy::mesh::{Mesh, Mesh3d};
 use bevy::pbr::MeshMaterial3d;
 use crate::cross_section::{CrossSectionAtlas, CrossSectionSettings};
+use bevy::prelude::{Reflect, ReflectComponent, ReflectDefault};
 
 /// **How much the gape has to move before the geometry is rebuilt**, in mesh units.
 ///
@@ -45,7 +46,8 @@ pub const GAPE_EPSILON: f32 = 1.0e-4;
 ///
 /// [`Default`] exists for struct-update syntax — `Laceration { path, source, ..default() }` — and
 /// authors nothing useful on its own: an empty path is refused by [`tear`].
-#[derive(Component, Clone, Debug)]
+#[derive(Component, Clone, Debug, Reflect)]
+#[reflect(Component)]
 pub struct Laceration {
     /// The cut, as a polyline in the mesh's own space. Two points is a straight slash; more points
     /// follow a curve. Sample it densely enough that the surface does not turn much between points.
@@ -99,7 +101,8 @@ impl Default for Laceration {
 /// **The child entity carrying a wound's bed**, so the plugin can find the trough it spawned without
 /// storing a mesh handle in [`Laceration`] — and so a consumer can query, hide or restyle every bed
 /// in the world with one filter.
-#[derive(Component, Clone, Copy, Debug, Default, PartialEq, Eq)]
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq, Eq, Reflect)]
+#[reflect(Component, Default)]
 pub struct LacerationBed;
 
 /// **The tick count every gape is measured against.**
@@ -130,7 +133,15 @@ pub struct LacerationPlugin;
 impl Plugin for LacerationPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<LacerationClock>()
-            .add_systems(Update, (advance_clock, retear_lacerations).chain().in_set(LacerationSystems));
+            .register_type::<Laceration>()
+            .register_type::<LacerationBed>()
+            .configure_sets(Update, LacerationSystems.in_set(crate::CarnageSystems))
+            .add_systems(
+                Update,
+                (advance_clock, retear_lacerations)
+                    .chain()
+                    .in_set(LacerationSystems),
+            );
     }
 }
 

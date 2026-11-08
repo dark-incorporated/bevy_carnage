@@ -73,6 +73,8 @@ pub struct FractureModesPlugin;
 
 impl Plugin for FractureModesPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<ModeSettings>().init_resource::<FractureModeCache>();
+        app.init_resource::<ModeSettings>()
+            .register_type::<ModeSettings>()
+            .init_resource::<FractureModeCache>();
     }
 }

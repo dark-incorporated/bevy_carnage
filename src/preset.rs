@@ -69,7 +69,8 @@ use crate::skin::{self, Pose, Rig};
 use crate::{CarnagePlugin, FractureCache, FractureSubject, GorePolicy, Wounded};
 
 /// **What a surface is, to the preset.**
-#[derive(Component, Clone, Copy, Debug, PartialEq)]
+#[derive(Component, Clone, Copy, Debug, PartialEq, Reflect)]
+#[reflect(Component)]
 pub struct Gore {
     /// Which kind of surface, and so which canvases it gets.
     pub kind: GoreKind,
@@ -107,7 +108,7 @@ pub struct Gore {
 }
 
 /// The four surfaces the preset knows how to dress.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 pub enum GoreKind {
     /// A body part: a flaymap and a wetmap over skin, banded by `region`'s thickness row.
     Skin(Region),
@@ -217,7 +218,8 @@ impl Gore {
 /// // Later, at whatever your physics found: the preset finds the mesh.
 /// hits.write(GoreHit::impact(enemy, from, dir, 0.03, 12.0));
 /// ```
-#[derive(Component, Clone, Debug)]
+#[derive(Component, Clone, Debug, Reflect)]
+#[reflect(Component)]
 pub struct GoreScene {
     rules: Vec<(Vec<String>, Option<Gore>)>,
     default: Option<Gore>,
@@ -1570,7 +1572,8 @@ type Canvases<'w, 's> = Query<
 
 /// Marks an entity the preset has already dressed, and keeps the material it wore before — the
 /// skin a thrown fragment's outer mesh goes back to.
-#[derive(Component, Clone, Debug, Default)]
+#[derive(Component, Clone, Debug, Default, Reflect)]
+#[reflect(Component, Default)]
 pub struct Dressed {
     /// The `StandardMaterial` the entity had before the flesh material replaced it.
     pub original: Option<Handle<StandardMaterial>>,
@@ -1677,7 +1680,7 @@ impl CutLine {
 /// **A spot on a skinned mesh, kept as a triangle and a place in it** rather than as a point. A point
 /// stays where it was cut while the body walks away from it; a triangle is carried by the joints that
 /// move its three vertices, so [`SkinAnchor`] is the spot wherever the pose puts it.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 pub struct SkinAnchor {
     /// The three vertex indices of the triangle.
     pub tri: [u32; 3],
@@ -1703,8 +1706,9 @@ impl SkinAnchor {
 /// than a second schedule pulsing the same hole. A wound leaves the list once its perfusion envelope
 /// reaches zero, after which it can never pulse again, and past [`GoreDials::open_wounds`] the
 /// oldest stops bleeding.
-#[derive(Component, Clone, Debug, Default)]
-pub struct Wounds(pub Vec<WoundSite>);
+#[derive(Component, Clone, Debug, Default, Reflect)]
+#[reflect(Component, Default)]
+pub struct Wounds(#[reflect(ignore)] pub Vec<WoundSite>);
 
 impl Wounds {
     /// Open `site`: it replaces any open wound within `reach_uv` of it, and the oldest past `cap`
@@ -1718,7 +1722,7 @@ impl Wounds {
 }
 
 /// **One wound that spurts**: which wound it is, and where on the mesh its axis is read from.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 pub struct SpurtSite {
     /// `Bleed::seed` of the [`WoundSite`] this belongs to, by which the wound is found again each beat. A wound replaced by a hit beside it takes its
     /// spurt with it.
@@ -1734,7 +1738,8 @@ pub struct SpurtSite {
 /// **Every wound this entity has that throws an arc a heartbeat**: those a [`GoreHit::arterial`] opened, beside [`Wounds`]. Read by [`spurt`]: on each beat
 /// of a wound in [`Wounds`] whose seed is here, the wound throws [`crate::bloodstain::arterial_arc`] at the walls and floors, pressure falling until the
 /// clot. `GoreReset` of the entity ends them.
-#[derive(Component, Clone, Debug, Default)]
+#[derive(Component, Clone, Debug, Default, Reflect)]
+#[reflect(Component, Default)]
 pub struct Spurts(pub Vec<SpurtSite>);
 
 /// **A body built at runtime that the preset may break.** For a body that is a loaded scene, put
@@ -1742,14 +1747,18 @@ pub struct Spurts(pub Vec<SpurtSite>);
 /// has no asset path to seed a cached bake from, so it bakes once with [`crate::fracture_mesh`] and
 /// hands the leaves here. The pieces are thrown from the entity's own transform on the bone handoff
 /// of any descendant [`Gore`].
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component, from_reflect = false)]
 pub struct GoreBreakable {
     /// The finest frontier of a [`crate::Fracture`], caps annotated with `UV_1`.
+    #[reflect(ignore)]
     pub leaves: Vec<crate::FragmentGeometry>,
     /// Which leaves touch which, so a blow parts islands rather than everything.
+    #[reflect(ignore)]
     pub bonds: crate::BondGraph,
     /// The fracture modes over those bonds (`fracture_modes` through [`crate::modal`]), when
     /// the bake could produce them. Without them every leaf flies.
+    #[reflect(ignore)]
     pub modes: Option<crate::modal::ModalSet>,
     /// The thickness row the caps are banded by.
     pub region: Region,
@@ -1858,7 +1867,8 @@ struct Parted {
 /// first is drawn) and [`DermisCanvas::draw_bruises`] rebuilds the bruises over it each time. Painted
 /// one over another, a bruise's faint margin was blended into its neighbour's core at every step and
 /// bleached a pale seam between them.
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component)]
 pub struct DermisCanvas {
     size: u32,
     px: Vec<u8>,
@@ -2038,9 +2048,11 @@ fn radial(
 /// canvas where its colour moves. Until 0.5.55 an entity held one, and a second blow started a new
 /// bruise while the first stopped ageing where it was, so a limb hit twice kept one bruise frozen
 /// beside one that darkened.
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug, Default, Reflect)]
+#[reflect(Component, Default)]
 pub struct Bruising {
     /// Every bruise still ageing, oldest first, at most [`MAX_BRUISES`].
+    #[reflect(ignore)]
     pub sites: Vec<BruiseSite>,
 }
 
@@ -2064,9 +2076,11 @@ pub const MAX_BRUISES: usize = 8;
 
 /// **Blood soaking into this cloth** from one landing: the Lucas–Washburn front (`crate::bloodstain::wick`)
 /// widens the stain over the seconds after it lands.
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug, Default, Reflect)]
+#[reflect(Component, Default)]
 pub struct Soaking {
     /// `(UV it landed at, silhouette in metres, tick it landed)` per landing still spreading.
+    #[reflect(ignore)]
     pub landings: Vec<(Vec2, StainShape, u32)>,
 }
 
@@ -2089,7 +2103,8 @@ pub const CLOTH_FILM_SHARE: f32 = 0.1;
 /// The material is switched to [`AlphaMode::Mask`] by the first hole and not before, so an unholed
 /// cloth keeps an opaque pipeline's early depth test; an authored `Blend` cloth is left as it was.
 /// A hole is never closed.
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component)]
 pub struct ClothHoles {
     canvas: DermisCanvas,
     /// Whether the material has been switched to a mask yet.
@@ -2255,12 +2270,14 @@ impl ClothHoles {
 }
 
 /// A thrown fragment the preset integrates.
-#[derive(Component, Clone, Copy, Debug)]
+#[derive(Component, Clone, Copy, Debug, Reflect)]
+#[reflect(Component)]
 pub struct Flying(pub Vec3);
 
 /// A piece of a broken body that stayed where it stood — the island the modes did not part. Marked
 /// so a caller resetting a scene can find it; the body it came from is gone.
-#[derive(Component, Clone, Copy, Debug, Default)]
+#[derive(Component, Clone, Copy, Debug, Default, Reflect)]
+#[reflect(Component, Default)]
 pub struct Standing;
 
 /// **A broken body's cut face, still bleeding.** The preset spawns every piece with a cut face with
@@ -2270,13 +2287,16 @@ pub struct Standing;
 ///
 /// A game that spawns the pieces itself (`GoreDials::spawn_fragments` off) keeps the pours by
 /// inserting [`CutFaceBleed::of`] on each piece's cut face, with the piece's `Transform`.
-#[derive(Component, Clone, Copy, Debug)]
+#[derive(Component, Clone, Copy, Debug, Reflect)]
+#[reflect(Component, from_reflect = false)]
 pub struct CutFaceBleed {
     /// The face's centre, in the piece's own space, so the pour follows the piece as it falls.
     pub centre_local: Vec3,
     /// The face as a wound, where it was when the body broke: the pulse schedule's seed and area.
+    #[reflect(ignore)]
     pub wound: BloodWound,
     /// The schedule.
+    #[reflect(ignore)]
     pub bleed: crate::bloodstain::Bleed,
 }
 
@@ -2364,12 +2384,14 @@ pub const GORE_SPATTER_SPEED_SCALE: f32 = 0.25;
 pub const GORE_FLOOR_MIST: f32 = 9.0;
 
 /// A rendered gut tube the preset keeps in step with its strand.
-#[derive(Component, Clone, Copy, Debug)]
+#[derive(Component, Clone, Copy, Debug, Reflect)]
+#[reflect(Component)]
 pub struct Gut;
 
 /// **A lump of organ a spill threw**: the mesh [`crate::viscera::organ_mesh`] built, a [`Flying`] that falls to [`GoreDials::floor_y`] and stays where it lands. Marked so a caller resetting a
 /// scene can find it, as it finds the [`Gut`]s: send each surface its [`GoreReset`] and despawn the organs and the guts yourself.
-#[derive(Component, Clone, Copy, Debug)]
+#[derive(Component, Clone, Copy, Debug, Reflect)]
+#[reflect(Component)]
 pub struct Organ;
 
 /// **How many organs a spill throws with its strands**: 2 (`docs/research/organs.md`). They are thrown by the viscera policy's gate with the guts, and `GoreDials::strands` at 0 stops both. **Tuned by eye.**
@@ -2745,6 +2767,24 @@ impl Plugin for GorePlugin {
             app.add_plugins(FleshPlugin);
         }
         app.init_resource::<GoreDials>()
+            .register_type::<Gore>()
+            .register_type::<GoreScene>()
+            .register_type::<Dressed>()
+            .register_type::<Wounds>()
+            .register_type::<Spurts>()
+            .register_type::<GoreBreakable>()
+            .register_type::<DermisCanvas>()
+            .register_type::<Bruising>()
+            .register_type::<Soaking>()
+            .register_type::<ClothHoles>()
+            .register_type::<Flying>()
+            .register_type::<Standing>()
+            .register_type::<CutFaceBleed>()
+            .register_type::<Gut>()
+            .register_type::<Organ>()
+            .register_type::<Tread>()
+            .register_type::<Smeared>()
+            .register_type::<RunDirection>()
             .init_resource::<MeshIndex>()
             .init_resource::<GoreClock>()
             .add_message::<GoreHit>()
@@ -2754,7 +2794,12 @@ impl Plugin for GorePlugin {
             .add_message::<GoreBurst>()
             .add_message::<GoreFractured>()
             .add_systems(FixedUpdate, scene_gore.before(dress).in_set(GoreSystems))
-            .configure_sets(FixedUpdate, GoreSystems.before(VisceraSystems))
+            .configure_sets(
+                FixedUpdate,
+                GoreSystems
+                    .in_set(crate::CarnageSystems)
+                    .before(VisceraSystems),
+            )
             .add_systems(
                 FixedUpdate,
                 (
@@ -2778,7 +2823,10 @@ impl Plugin for GorePlugin {
                     .chain()
                     .in_set(GoreSystems),
             )
-            .add_systems(FixedUpdate, retube.after(VisceraSystems));
+            .add_systems(
+                FixedUpdate,
+                retube.in_set(crate::CarnageSystems).after(VisceraSystems),
+            );
     }
 }
 
@@ -4365,7 +4413,8 @@ impl Sole {
 /// it stood in, up to `1`, and every step sheds [`TREAD_SHED`] of it onto the floor first, so prints
 /// out of a pool fade geometrically — the sixth is about a sixth of the first — and a sole that
 /// crossed only dried blood carries none.
-#[derive(Component, Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq, Reflect)]
+#[reflect(Component, Default)]
 pub struct Tread {
     /// What the next print inks, `0` to `1`.
     pub load: f32,
@@ -4429,7 +4478,8 @@ impl GoreSmear {
 
 /// **The blood on a smearing contact**, kept on the [`GoreSmear::carrier`] entity by the preset from its first smear: square metres of full coverage. Read it to drive a game's own look — blood drawn on a
 /// glove — and a [`GoreReset`] of the carrier or anything above it wipes it. A contact that has crossed a surface holds what it did not lay, and the next stroke starts with it.
-#[derive(Component, Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq, Reflect)]
+#[reflect(Component, Default)]
 pub struct Smeared {
     /// What the contact carries now, square metres of full coverage; at most [`SMEAR_LOAD_MAX_M2`].
     pub load_m2: f32,
@@ -5540,7 +5590,8 @@ fn flush_dermis(
 /// moves, which way is down on the atlas is a fact about the pose, and a forearm held above the head
 /// has blood running along it toward the elbow, not toward the hand, however its atlas is laid out.
 /// Present on every dressed skinned mesh; a rigid mesh keeps the one direction it was given.
-#[derive(Component, Clone, Copy, Debug, PartialEq)]
+#[derive(Component, Clone, Copy, Debug, PartialEq, Reflect)]
+#[reflect(Component)]
 pub struct RunDirection(pub Vec2);
 
 /// The shallowest slope blood runs on: a surface within about seven degrees of level holds it, and

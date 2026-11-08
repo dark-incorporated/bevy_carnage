@@ -47,8 +47,10 @@
 //! exactly one place, [`crate::cross_section::uv1_at_core`], where it makes a limb's bone a **core at the deepest
 //! point of a cut face** rather than everything past the cortex start.
 
+use bevy::prelude::Reflect;
+
 /// Where on the body a cut is, which decides which thickness row applies.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Region {
     /// Arm or leg: thin fat, thick muscle, a long bone with a wide marrow cavity.
@@ -89,7 +91,7 @@ impl Layer {
 ///
 /// The four finite layers are followed by marrow, which this type treats as extending to any depth;
 /// `marrow_mm` is only how much of it a strip texture draws before it repeats.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Layers {
     /// Dermis plus epidermis.

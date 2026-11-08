@@ -9,6 +9,7 @@ use bevy::log::warn;
 use bevy::math::{Vec2, Vec3};
 use bevy::mesh::Mesh;
 use bevy::prelude::Component;
+use bevy::prelude::{Reflect, ReflectComponent};
 use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 use bevy::transform::components::GlobalTransform;
 use crate::cross_section::{Layer, Layers, Region, texel_at, texel_mean, value_noise, worley};
@@ -193,7 +194,8 @@ pub struct Handoff {
 /// no clock and will not guess one; [`shade`](Self::shade) is called by the caller after the last paint
 /// of a tick, because only the caller knows when that was. The plugin registers only the upload
 /// budget, which is the one part with no gameplay opinion in it.
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component)]
 pub struct FlayCanvas {
     /// Edge length in texels. Always ≥ 1.
     size: u32,
